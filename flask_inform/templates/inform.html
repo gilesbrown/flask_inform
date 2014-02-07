@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		{%- for item in items %}
+		{{ item | inform_item }}
+		{%- endfor %}
+		<script src="/informed.js"></script>
+	</body>
+</html>

@@ -1,0 +1,44 @@
+{% macro inform_form_item(id, action, method, fields) -%}
+		<form id="{{ id }}" action="{{ action }}"{% if method %} method="{{ method }}"{% endif %}>
+		{%- for field in fields %}
+			{{ field | inform_form_field }}
+		{%- endfor %}
+		</form>
+{%- endmacro %}
+{%- macro inform_form_select(select) -%}
+<select name="{{ select.name }}">
+  {%- for optkey, optval, optsel in select.options() %}
+				<option value="{{ optval }}"{% if optsel %} selected="selected"{% endif %}>{{ optkey }}</option>
+  {%- endfor %}
+			</select>
+{%- endmacro %}
+{%- macro inform_form_input(name, type) -%}
+<input name="{{ name }}"{% if type %} type="{{ type }}"{% endif %} />
+{%- endmacro -%}
+{% macro inform_value_item(value) %}
+    {{ value | inform_value }}
+{%- endmacro %}
+{% macro inform_dl(obj, id=None) %}
+  <dl{% if id %} id="{{ id }}"{% endif %}>
+    {% for key, value in obj.items() %}
+    <dt>{{ key | inform_value }}</dt>
+    <dd>{{ value | inform_value }}</dd>
+    {% endfor %}
+  </dl>
+{%- endmacro %}
+{% macro inform_ol(iterable, id=None) %}
+  <ol{% if id %} id="{{ id }}"{% endif %}>
+    {% for obj in iterable %}
+    <li>{{ obj | inform_value }}</li>
+    {% endfor %}
+  </ol>
+{%- endmacro %}
+{%- macro inform_link(href, id=None) -%}
+<a{% if id %} id="{{ id }}"{% endif %} href="{{ href }}"></a>
+{%- endmacro %}
+{%- macro inform_str(value, id=None) -%}
+<code{% if id %} id="{{ id }}"{% endif %}>{{ value }}</code>
+{%- endmacro %}
+{%- macro inform_none(value, id=None) -%}
+<code{% if id %} id="{{ id }}"{% endif %}></code>
+{%- endmacro %}
