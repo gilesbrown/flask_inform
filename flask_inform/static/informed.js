@@ -208,7 +208,7 @@ function annotate(elem) {
 function getMetaValue(selector) {
 	var meta = document.querySelector(selector)
 	if (meta) {
-		return meta.getAttribute('value')
+		return meta.getAttribute('content')
 	}
 }
 
@@ -217,11 +217,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	addBootstrapToHead()
 	var container = elemWithAttr('div', {"class": "container"})
 	var http_method = getMetaValue('meta[name="http-method"]')
-	var http_status = getMetaValue('meta[name="http-status"]')
+	var http_status_code = getMetaValue('meta[name="http-status-code"]')
 
 	container.appendChild(
 		elemWithAttr('div', {'class': 'page-header'},
-			elemWithAttr('h2', {}, http_method, ' ', document.documentURI, ' ', http_status)
+			elemWithAttr('h2', {}, http_method, ' ', document.documentURI, ' ', http_status_code)
 		)
 	)
 

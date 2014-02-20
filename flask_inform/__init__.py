@@ -6,7 +6,10 @@ from functools import wraps
 from pkg_resources import resource_filename
 from flask import render_template, send_from_directory
 from flask_inform.filters import inform_filters, Item, Link
-from flask_inform.view.descriptors import FormDescriptor
+from flask_inform.descriptors import FormDescriptor
+from flask_inform.document import Document
+from flask_inform.viewfunc import ViewFunc
+from flask_inform.elements import Input, Select
 from xml.etree.ElementTree import ElementTree
 
 
@@ -83,19 +86,22 @@ class Inform(object):
         #app.jinja_loader.searchpath.insert(0, resource_filename(__name__, 'templates'))
         #app.jinja_env.filters.update(inform_filters)
 
-    def add_url_rules(self, rule, view):
-        format_endpoint = '{view.__name__}.{method}'.format
-        endpoint = format_endpoint(view=view, method='get')
-        logging.warning("add_url_rules: %r %r %r", rule, endpoint, view.get)
-        self.app.add_url_rule(rule, endpoint, view_func(view.get))
-        for name in view.__descriptors__:
-            desc = getattr(view, name)
-            #logging.warning("OH %r", desc)
-            if isinstance(desc, FormDescriptor):
-                subrule = posixpath.join(rule, name)
-                endpoint = format_endpoint(view=view, method=name)
-                logging.warning("add FORM: %r %r %r", subrule, endpoint, desc)
-                self.app.add_url_rule(subrule, endpoint, getattr(view, name).as_view_func(view))
+    def add_url_rules(self, document_class, rule):
+        endpoint = document_class.__name__
+        self.app.add_url_rule(rule, endpoint, ViewFunc(document_class))
+        print "add_url_rules!"
+        #format_endpoint = '{view.__name__}.{method}'.format
+        #endpoint = format_endpoint(view=view, method='get')
+        #logging.warning("add_url_rules: %r %r %r", rule, endpoint, view.get)
+        #self.app.add_url_rule(rule, endpoint, view_func(view.get))
+        #for name in view.__descriptors__:
+        #    desc = getattr(view, name)
+        #    #logging.warning("OH %r", desc)
+        #    if isinstance(desc, FormDescriptor):
+        #        subrule = posixpath.join(rule, name)
+        #        endpoint = format_endpoint(view=view, method=name)
+        #        logging.warning("add FORM: %r %r %r", subrule, endpoint, desc)
+        #        self.app.add_url_rule(subrule, endpoint, getattr(view, name).as_view_func(view))
                 
         #for name in view.__descriptors__:
         #    descriptor = getattr(view, name)
@@ -109,3 +115,8 @@ class Inform(object):
         #
         #if hasattr(view, 'get'):
         #    self.app.add_url_rule(base + '<int:id>', '{0.__name__}.get'.format(view), rendered(instantiated(view.get)))
+
+def form():
+    def decorator(f):
+        return FormDescriptor(f)
+    return decorator
